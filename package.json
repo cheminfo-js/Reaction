@@ -36,6 +36,11 @@
     "eslint-plugin-no-only-tests": "^2.0.0",
     "jest": "^21.2.1",
     "npm-run-all": "^4.1.1",
+    "openchemlib": "^5.3.0",
     "rollup": "^0.50.0"
+  },
+  "dependencies": {
+    "rxn-parser": "0.0.2",
+    "svg.js": "^2.6.3"
   }
 }

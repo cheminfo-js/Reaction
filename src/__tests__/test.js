@@ -1,7 +1,7 @@
-import myModule from '..';
+import Reaction from '..';
 
-describe('test myModule', () => {
-    it('should return 42', () => {
-        expect(myModule()).toEqual(42);
+describe('main test for reaction', () => {
+    it('starting', () => {
+
     });
 });
