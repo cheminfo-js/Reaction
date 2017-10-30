@@ -30,14 +30,16 @@
     "testEnvironment": "node"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
-    "eslint": "^4.8.0",
+    "eslint": "^4.9.0",
     "eslint-config-cheminfo": "^1.8.0",
     "eslint-plugin-no-only-tests": "^2.0.0",
     "jest": "^21.2.1",
     "npm-run-all": "^4.1.1",
     "openchemlib": "^5.3.0",
-    "rollup": "^0.50.0"
+    "rollup": "^0.50.0",
+    "svgdom": "0.0.15"
   },
   "dependencies": {
     "rxn-parser": "0.0.2",
