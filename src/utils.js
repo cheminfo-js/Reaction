@@ -10,7 +10,7 @@ export function getFormat(rxnData, OCL) {
         var output = {};
         var mol = OCL.Molecule.fromMolfile(elem);
         output.ocl = mol.getIDCodeAndCoordinates();
-        output.kind = "starting material";
+        output.kind = 'starting material';
 
         return output;
     });
@@ -27,7 +27,7 @@ export function getFormat(rxnData, OCL) {
     return {
         reagents: reagents,
         products: products,
-        conditions: ""
+        conditions: ''
     };
 }
 
@@ -42,9 +42,9 @@ export function organizeData(data, catPrefix, OCL) {
     var reagents = [];
 
 
-    for(var i = 0; i < data.reagents.length; ++i) {
+    for (var i = 0; i < data.reagents.length; ++i) {
         var current = data.reagents[i];
-        switch(current.kind) {
+        switch (current.kind) {
             case 'reagent':
                 reagents.push(oclMap(current));
                 break;
@@ -74,8 +74,8 @@ function getText(data, catPrefix, oclMap) {
 
     // add catalyst
     var catalyst = data.reagents.find(elem => elem.kind === 'catalyst');
-    if(catalyst) {
-        if(catPrefix) {
+    if (catalyst) {
+        if (catPrefix) {
             arrow.push('Cat. ');
         }
         arrow.push(splitShortName(oclMap(catalyst).getMolecularFormula().formula));
@@ -89,16 +89,16 @@ function getText(data, catPrefix, oclMap) {
 
     arrow.push(data.conditions.replace(/(<([^>]+)>)|\n/ig, ''));
     var products = data.products;
-    var bestYieldStr = "";
-    if(products.length === 1) {
+    var bestYieldStr = '';
+    if (products.length === 1) {
         bestYieldStr = `Best yield: ${String(products[0].yield)} %`;
     } else if (products.length > 1) {
         var bestYield = -1;
-        for(var i = 0; i < products.length; ++i) {
+        for (var i = 0; i < products.length; ++i) {
             var currentProduct = products[i];
             output.products.push(`${String(currentProduct.yield)} %`);
             if (currentProduct.yield > bestYield) {
-                bestYield = currentProduct.yield
+                bestYield = currentProduct.yield;
             }
         }
         bestYieldStr = `Best yield: ${String(bestYield)} %`;
@@ -115,9 +115,9 @@ function splitShortName(shortName) {
     var index = 0;
     var currentRegex = regexps[index];
     var output = [];
-    var str = "";
-    for(var i = 0; i < shortName.length; ++i) {
-        if(currentRegex.test(shortName[i])) {
+    var str = '';
+    for (var i = 0; i < shortName.length; ++i) {
+        if (currentRegex.test(shortName[i])) {
             str += shortName[i];
         } else {
             output.push(str);

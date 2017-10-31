@@ -2,7 +2,7 @@ import {
     getFormat,
     organizeData
 } from './utils';
-import SVG from 'svg.js';
+import {SVG, document} from './svg';
 
 const config = {
     DISTANCE: 10, // separation distance between elements of the svg
@@ -38,8 +38,8 @@ export default class Reaction {
         this.OCL = OCL;
     }
 
-    static fromJSON (reactionJSON, options) {
-         return new Reaction(reactionJSON, options)
+    static fromJSON(reactionJSON, options) {
+        return new Reaction(reactionJSON, options);
     }
 
     static fromRXN(reactionRXN, options) {
@@ -52,14 +52,16 @@ export default class Reaction {
         }
 
         var data = organizeData(this.data, this.catPrefix, this.OCL);
-        var context = SVG(this.domElement);
+        var context = SVG(document.documentElement);
         draw(context, data, this.font);
 
         return context.svg();
     }
-};
+}
 
-function draw (context, data, font) {
+const distance = 10;
+
+function draw(context, data, font) {
     var {
         starting,
         reagents,
@@ -87,25 +89,25 @@ function draw (context, data, font) {
 
     // put catalyst over the arrow
     var subFont = Object.assign({}, selectedFont, {
-        "baseline-shift": "sub",
-        "font-size": "small"
+        'baseline-shift': 'sub',
+        'font-size': 'small'
     });
-    var arrowBelow = context.text(function(add) {
-        for(var i = 0; i < text.arrow.length; ++i) {
+    var arrowBelow = context.text(function (add) {
+        for (var i = 0; i < text.arrow.length; ++i) {
             var currentText = text.arrow[i];
-            if(Array.isArray(currentText)) {
+            if (Array.isArray(currentText)) {
                 // process MF
-                for(var j = 0; j < currentText.length; ++j) {
+                for (var j = 0; j < currentText.length; ++j) {
                     var a = add.tspan(currentText[j]);
-                    if(j % 2 === 1) {
+                    if (j % 2 === 1) {
                         a.font(subFont);
                     } else {
                         a.font(selectedFont);
                     }
                 }
-            } else if(currentText !== '') {
+            } else if (currentText !== '') {
                 add.tspan(currentText).font(selectedFont);
-                if(currentText === 'Cat. ') {
+                if (currentText === 'Cat. ') {
                     continue;
                 }
             }
@@ -125,7 +127,7 @@ function draw (context, data, font) {
     reagentsBox = reagentsGroup.rbox(context);
     arrowBelowBox = arrowBelow.rbox(context);
 
-    if(arrowBelowBox.width > reagentsBox.width) {
+    if (arrowBelowBox.width > reagentsBox.width) {
         arrowWidth += arrowBelowBox.width;
         var moveCata = arrowWidth / 2.0 - reagentsBox.width / 2.0;
         var moveBelow = config.DISTANCE / 2.0;
@@ -190,6 +192,13 @@ function move(elem, x, y) {
     elem.center(elem.x() + x, elem.y() + y);
 }
 
+const svgOptions = {
+    suppressChiralText: true,
+    suppressCIPParity: true,
+    suppressESR: true,
+    noStereoProblem: true
+};
+
 function drawGroup(context, array, options) {
     var {
         joinBy,
@@ -201,17 +210,17 @@ function drawGroup(context, array, options) {
     var group = context.group();
     var currentX = 100;
     var currentY = 100;
-    for(var i = 0; i < array.length; ++i) {
+    for (var i = 0; i < array.length; ++i) {
         var currentReagent = array[i];
         var currentSVG = currentReagent.toSVG(200, 200, String(i), svgOptions);
         var elem = getGroup(context, currentSVG);
 
-        if(joinBy && i > 0) {
+        if (joinBy && i > 0) {
             var text = group.text(joinBy);
             text.center(currentX, currentY);
             var reagentBox = elem.rbox(context);
             var dist = config.DISTANCE + reagentBox.width / 2.0;
-            if(isVertical) {
+            if (isVertical) {
                 currentY += dist;
             } else {
                 currentX += dist;
@@ -220,14 +229,14 @@ function drawGroup(context, array, options) {
 
         move(elem, currentX, currentY);
         var box = elem.rbox(context);
-        if(labels && labels[i]) {
+        if (labels && labels[i]) {
             text = group.text(labels[i]);
             text.font(font);
             text.move(box.cx, box.cy + 20);
         }
 
         dist = config.DISTANCE + box.width / 2.0;
-        if(isVertical) {
+        if (isVertical) {
             currentY += dist;
         } else {
             currentX += dist;

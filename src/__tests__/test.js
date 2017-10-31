@@ -1,15 +1,12 @@
 import Reaction from '..';
-import window from 'svgdom';
 import OCL from 'openchemlib';
 
-const document = window.document;
-
-describe('main test for reaction', () => {
-    it('no products on common format', () => {
-        
-    });
-
-    it('other test', () => {
-        expect(2).toBe(2);
+describe('Main test', () => {
+    test('Basic test', () => {
+        var data = require('../../data/noProducts.json');
+        var reaction = Reaction.fromJSON(data, {});
+        reaction.setOCL(OCL);
+        //expect(2).toBe(2);
+        reaction.toSVG();
     });
 });
