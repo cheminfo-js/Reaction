@@ -1,8 +1,9 @@
 import {
-    getFormat,
     organizeData
 } from './utils';
 import {SVG, document} from './svg';
+
+import rxnToReactionJSON from './util/rxnToReactionJSON';
 
 const config = {
     DISTANCE: 10, // separation distance between elements of the svg
@@ -17,7 +18,6 @@ const config = {
 export default class Reaction {
     constructor(data, options) {
         this.data = data;
-        this.OCL = undefined;
 
         var {
             catPrefix = false,
@@ -34,8 +34,8 @@ export default class Reaction {
         this.domElement = domElement;
     }
 
-    setOCL(OCL) {
-        this.OCL = OCL;
+    static setOCL(OCL) {
+        Reaction.OCL = OCL;
     }
 
     static fromJSON(reactionJSON, options) {
@@ -43,19 +43,25 @@ export default class Reaction {
     }
 
     static fromRXN(reactionRXN, options) {
-        return Reaction.fromJSON(getFormat(reactionRXN), options);
+        checkOCL();
+        let reactionJSON = rxnToReactionJSON(reactionRXN, Reaction.OCL);
+        return Reaction.fromJSON(reactionJSON, options);
     }
 
     toSVG() {
-        if (this.OCL === undefined) {
-            throw new Error('OCL is not defined on this instance of reaction');
-        }
-
-        var data = organizeData(this.data, this.catPrefix, this.OCL);
+        checkOCL();
+        var data = organizeData(this.data, this.catPrefix, Reaction.OCL);
+        console.log(data);
         var context = SVG(document.documentElement);
         draw(context, data, this.font);
 
         return context.svg();
+    }
+}
+
+function checkOCL() {
+    if (!Reaction.OCL) {
+        throw new Error('This library requires an instance OCL. Please use Reaction.setOCL(OCL) before using it');
     }
 }
 
