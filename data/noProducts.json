@@ -1,0 +1,27 @@
+{
+  "reagents": [
+    {
+      "ocl": {
+        "idCode": "daz@`DBHRYfij`@",
+        "coordinates": "!BrGw~Ox`BRGwWo[x@bKt"
+      },
+      "kind": "reagent"
+    },
+    {
+      "ocl": {
+        "idCode": "gJQ@@dkSBJ@",
+        "coordinates": "!B@Jp@dpBl@IL"
+      },
+      "kind": "starting material"
+    },
+    {
+      "ocl": {
+        "idCode": "eMABHXaIh@",
+        "coordinates": "!B@Fp@Dp"
+      },
+      "kind": "solvent"
+    }
+  ],
+  "products": [],
+  "conditions": ""
+}

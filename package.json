@@ -1,0 +1,56 @@
+{
+  "name": "reaction",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "browser": {
+    "./lib/index.js": "./src/index.js",
+    "./src/svg.js": "./src/svg-browser.js"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "build": "cheminfo build",
+    "eslint": "eslint src",
+    "eslint-fix": "npm run eslint -- --fix",
+    "prepublishOnly": "rollup -c",
+    "test": "run-s testonly eslint",
+    "testonly": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheminfo/reaction.git"
+  },
+  "keywords": [],
+  "author": "Jefferson Hernandez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cheminfo/reaction/issues"
+  },
+  "homepage": "https://github.com/cheminfo/reaction#readme",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "cheminfo-tools": "^1.20.0",
+    "eslint": "^4.10.0",
+    "eslint-config-cheminfo": "^1.8.0",
+    "eslint-plugin-no-only-tests": "^2.0.0",
+    "jest": "^21.2.1",
+    "npm-run-all": "^4.1.1",
+    "openchemlib": "^5.3.0",
+    "rollup": "^0.50.0"
+  },
+  "dependencies": {
+    "rxn-parser": "0.0.2",
+    "svg.js": "^2.6.3",
+    "svgdom": "0.0.15",
+    "jsdom": "11.3.0",
+    "jsdom-global": "3.0.2"
+  }
+}
