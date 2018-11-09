@@ -1,4 +1,3 @@
-
 export function organizeData(data, catPrefix, OCL) {
     var oclMap = getOCLMap(OCL);
     var output = {
@@ -8,7 +7,6 @@ export function organizeData(data, catPrefix, OCL) {
 
     var starting = [];
     var reagents = [];
-
 
     for (var i = 0; i < data.reagents.length; ++i) {
         var current = data.reagents[i];
@@ -30,7 +28,13 @@ export function organizeData(data, catPrefix, OCL) {
 }
 
 function getOCLMap(OCL) {
-    return (elem) => OCL.Molecule.fromIDCode(elem.ocl.idCode);
+    return elem => {
+        let molecule = OCL.Molecule.fromIDCode(
+            elem.ocl.idCode,
+            elem.ocl.coordinates
+        );
+        return molecule;
+    };
 }
 
 function getText(data, catPrefix, oclMap) {
@@ -46,16 +50,20 @@ function getText(data, catPrefix, oclMap) {
         if (catPrefix) {
             arrow.push('Cat. ');
         }
-        arrow.push(splitShortName(oclMap(catalyst).getMolecularFormula().formula));
+        arrow.push(
+            splitShortName(oclMap(catalyst).getMolecularFormula().formula)
+        );
     }
 
     // add solvent
     var solvent = data.reagents.find(elem => elem.kind === 'solvent');
     if (solvent) {
-        arrow.push(splitShortName(oclMap(solvent).getMolecularFormula().formula));
+        arrow.push(
+            splitShortName(oclMap(solvent).getMolecularFormula().formula)
+        );
     }
 
-    arrow.push(data.conditions.replace(/(<([^>]+)>)|\n/ig, ''));
+    arrow.push(data.conditions.replace(/(<([^>]+)>)|\n/gi, ''));
     var products = data.products;
     var bestYieldStr = '';
     if (products.length === 1) {

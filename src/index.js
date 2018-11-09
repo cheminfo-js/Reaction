@@ -1,13 +1,12 @@
-import {
-    organizeData
-} from './utils';
+import {organizeData} from './utils';
 import {SVG, document} from './svg';
 
 import rxnToReactionJSON from './util/rxnToReactionJSON';
 
 const config = {
     DISTANCE: 10, // separation distance between elements of the svg
-    SVG_OPTIONS: { // configuration for the svg retrieved from OCL
+    SVG_OPTIONS: {
+        // configuration for the svg retrieved from OCL
         suppressChiralText: true,
         suppressCIPParity: true,
         suppressESR: true,
@@ -51,7 +50,6 @@ export default class Reaction {
     toSVG() {
         checkOCL();
         var data = organizeData(this.data, this.catPrefix, Reaction.OCL);
-        console.log(data);
         var context = SVG(document.documentElement);
         draw(context, data, this.font);
 
@@ -61,29 +59,26 @@ export default class Reaction {
 
 function checkOCL() {
     if (!Reaction.OCL) {
-        throw new Error('This library requires an instance OCL. Please use Reaction.setOCL(OCL) before using it');
+        throw new Error(
+            'This library requires an instance OCL. Please use Reaction.setOCL(OCL) before using it'
+        );
     }
 }
 
 const distance = 10;
 
 function draw(context, data, font) {
-    var {
-        starting,
-        reagents,
-        products,
-        text
-    } = data;
+    var {starting, reagents, products, text} = data;
 
     var selectedFont = font;
 
     var output = context.group();
-    var startingGroup = drawGroup(context, starting, {
+    var startingGroup = drawGroupOfMolecules(context, starting, {
         joinBy: '+',
         font: selectedFont
     });
 
-    var reagentsGroup = drawGroup(context, reagents, {
+    var reagentsGroup = drawGroupOfMolecules(context, reagents, {
         joinBy: '',
         isVertical: true
     });
@@ -117,17 +112,27 @@ function draw(context, data, font) {
                     continue;
                 }
             }
-            add.tspan(' ').font(selectedFont).newLine();
+            add.tspan(' ')
+                .font(selectedFont)
+                .newLine();
         }
     });
 
     //arrowBelow.font(selectedFont);
     var arrowBelowBox = arrowBelow.rbox(context);
-    arrowBelow.move(startingBox.x2 + arrowBelowBox.width / 2.0 + config.DISTANCE, startingBox.cy + config.DISTANCE);
+    arrowBelow.move(
+        startingBox.x2 + arrowBelowBox.width / 2.0 + config.DISTANCE,
+        startingBox.cy + config.DISTANCE
+    );
 
     var reagentsBox = reagentsGroup.rbox(context);
-    reagentsGroup.dmove(startingBox.width / 2.0 + reagentsBox.width / 2.0 + config.DISTANCE,
-        startingBox.cy - reagentsBox.cy - (reagentsBox.height / 2.0) - config.DISTANCE);
+    reagentsGroup.dmove(
+        startingBox.width / 2.0 + reagentsBox.width / 2.0 + config.DISTANCE,
+        startingBox.cy -
+            reagentsBox.cy -
+            reagentsBox.height / 2.0 -
+            config.DISTANCE
+    );
 
     var arrowWidth = distance;
     reagentsBox = reagentsGroup.rbox(context);
@@ -145,7 +150,12 @@ function draw(context, data, font) {
     reagentsGroup.x(reagentsGroup.x() + moveCata);
 
     arrowBelow.x(arrowBelow.x() + moveBelow);
-    var arrow = makeArrow(context, startingBox.x2 + config.DISTANCE, startingBox.cy, arrowWidth);
+    var arrow = makeArrow(
+        context,
+        startingBox.x2 + config.DISTANCE,
+        startingBox.cy,
+        arrowWidth
+    );
 
     // once we have it on the right position we can shrink it
     var prevWidth = reagentsGroup.rbox(context).w;
@@ -155,24 +165,29 @@ function draw(context, data, font) {
     var width = reagentsGroup.rbox(context).w;
     reagentsGroup.dmove(0, prevWidth - width - config.DISTANCE);
 
-
     output.add(arrow);
     output.add(arrowBelow);
 
     var outputBBox = output.rbox(context);
-    var productsGroup = drawGroup(context, products, {
+    var productsGroup = drawGroupOfMolecules(context, products, {
         labels: text.products,
         isVertical: false,
         joinBy: '+',
         font: selectedFont
     });
     var productsBox = productsGroup.rbox(context);
-    productsGroup.dmove(Math.abs(outputBBox.x2 - productsBox.x) + config.DISTANCE, 0);
+    productsGroup.dmove(
+        Math.abs(outputBBox.x2 - productsBox.x) + config.DISTANCE,
+        0
+    );
 
     output.add(productsGroup);
 
     outputBBox = output.rbox(context);
-    context.size(outputBBox.x + outputBBox.width, outputBBox.y + outputBBox.height);
+    context.size(
+        outputBBox.x + outputBBox.width,
+        outputBBox.y + outputBBox.height
+    );
 }
 
 function makeArrow(context, x, y, width) {
@@ -205,19 +220,14 @@ const svgOptions = {
     noStereoProblem: true
 };
 
-function drawGroup(context, array, options) {
-    var {
-        joinBy,
-        isVertical,
-        labels,
-        font
-    } = options;
+function drawGroupOfMolecules(context, molecules, options) {
+    var {joinBy, isVertical, labels, font} = options;
 
     var group = context.group();
     var currentX = 100;
     var currentY = 100;
-    for (var i = 0; i < array.length; ++i) {
-        var currentReagent = array[i];
+    for (var i = 0; i < molecules.length; ++i) {
+        var currentReagent = molecules[i];
         var currentSVG = currentReagent.toSVG(200, 200, String(i), svgOptions);
         var elem = getGroup(context, currentSVG);
 
@@ -250,6 +260,9 @@ function drawGroup(context, array, options) {
         group.add(elem);
     }
     group.move(100, 100);
+
+    console.log('---------------');
+    console.log(group);
 
     return group;
 }
